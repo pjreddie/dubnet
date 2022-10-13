@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <stdint.h>
 #include "tensor.h"
 
 // Make a tensor with the specified dimension and size
