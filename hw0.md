@@ -10,7 +10,7 @@ For the first assignment we'll be diving right in to neural networks. What are t
 
 During this class you'll be building out your own neural network framework. I'll take care of some of the more boring parts like loading data, stringing things together, etc. so you can focus on the important parts.
 
-Those of you who took vision with me will recognize a lot of the image codebase as stuff that you did! Early on we'll be focussing on applications of deep learning to problems in computer vision so there's a lot of code in `image.c` for loading images and performing some basic operations. No need to go into the details, just glance through `image.h` for a quick summary of the kinds of operations you can perform on images. We won't need any of that for this homework though!
+Those of you who took vision with me will recognize a lot of the image codebase as stuff that you did! Early on we'll be focusing on applications of deep learning to problems in computer vision so there's a lot of code in `image.c` for loading images and performing some basic operations. No need to go into the details, just glance through `image.h` for a quick summary of the kinds of operations you can perform on images. We won't need any of that for this homework though!
 
 More pertinent to this homework is the tensor library described in `tensor.h` and fleshed out in `tensor.c`. As we've learned in class, the heavy lifting in deep learning is done through tensor operations. One special case of tensors is matrices. We'll be implementing matrix transposition and multiplication in `matrix.c`.
 
