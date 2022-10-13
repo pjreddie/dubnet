@@ -16,7 +16,7 @@ More pertinent to this homework is the tensor library described in `tensor.h` an
 
 Remember, the codebase is in C. There is a `Makefile` but every time you make a change to the code you have to run `make` for your executable to be updated. Try it right now by running:
 
-    git clone https://github.com/pjreddie/dubnet
+    git clone --recurse-submodules https://github.com/pjreddie/dubnet
     cd dubnet
     make
     ./dubnet test hw0

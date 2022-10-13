@@ -1,0 +1,3 @@
+[submodule "lib/jcr"]
+	path = lib/jcr
+	url = https://github.com/pjreddie/jcr.git
