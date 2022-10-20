@@ -148,9 +148,13 @@ void test_transpose()
     size_t s[2] = {29, 13};
     tensor t = tensor_random(1.0f, 2, s);
     tensor tt = matrix_transpose(t);
-    tensor ttt = matrix_transpose(tt);
-    TEST (tt.size[0] == t.size[1]);
-    TEST (tt.size[1] == t.size[0]);
+    tensor ttt = {0};
+    if (tt.n == 2)
+    {
+        ttt = matrix_transpose(tt);
+    }
+    TEST (tt.n == 2 && tt.size[0] == t.size[1]);
+    TEST (tt.n == 2 && tt.size[1] == t.size[0]);
     TEST (same_tensor(t, ttt));
     tensor_free(t);
     tensor_free(tt);
@@ -296,18 +300,18 @@ void test_tensor_sum()
 
 void time_matrix_multiply()
 {
-        size_t i;
-        size_t n = 100;
-        tensor a = tensor_vrandom(1, 2, 512, 768);
-        tensor b = tensor_vrandom(1, 2, 768, 384);
-        double start = currtime();
-        for(i = 0; i < n; ++i){
-            tensor c = matrix_multiply(a, b);
-            tensor_free(c);
-        }
-        double end = currtime();
-        printf("matrix_multiply took %f sec\n", end - start);
-        printf("%g gflops\n", gflops(1.0*n*a.size[0]*b.size[0]*b.size[1], (end-start)));
+    size_t i;
+    size_t n = 100;
+    tensor a = tensor_vrandom(1, 2, 512, 768);
+    tensor b = tensor_vrandom(1, 2, 768, 384);
+    double start = currtime();
+    for(i = 0; i < n; ++i){
+        tensor c = matrix_multiply(a, b);
+        tensor_free(c);
+    }
+    double end = currtime();
+    printf("matrix_multiply took %f sec\n", end - start);
+    printf("%g gflops\n", gflops(1.0*n*a.size[0]*b.size[0]*b.size[1], (end-start)));
 }
 
 void time_tensor()
@@ -548,6 +552,7 @@ void test_connected_layer()
 void test_hw0()
 {
     test_copy();
+    test_transpose();
     test_matmul();
     test_activation_layer();
     test_connected_layer();
@@ -567,85 +572,85 @@ void test()
 }
 
 /*
-void test_conv2d()
+   void test_conv2d()
+   {
+   size_t stride = 1;
+   size_t pad = 1;
+
+   tensor f = tensor_vrandom(1, 4, 8, 3, 3, 3);
+   tensor im = tensor_vrandom(1, 3, 3, 32, 64);
+   tensor c = conv2d(im, f, stride, pad);
+   tensor c_slow = conv2d_slow(im, f, stride, pad);
+   TEST (same_tensor(c, c_slow));
+   tensor_free(f);
+   tensor_free(im);
+   tensor_free(c);
+   tensor_free(c_slow);
+   }
+
+   void test_col2im()
+   {
+   }
+
+// Conv example
 {
-    size_t stride = 1;
-    size_t pad = 1;
+size_t im_s[3] = {3, 512, 256};
+size_t f_s[4] = {32, 3, 3, 3};
+size_t stride = 1;
+size_t pad = 1;
+size_t n = 100;
+size_t i = 0;
 
-    tensor f = tensor_vrandom(1, 4, 8, 3, 3, 3);
-    tensor im = tensor_vrandom(1, 3, 3, 32, 64);
-    tensor c = conv2d(im, f, stride, pad);
-    tensor c_slow = conv2d_slow(im, f, stride, pad);
-    TEST (same_tensor(c, c_slow));
-    tensor_free(f);
-    tensor_free(im);
-    tensor_free(c);
-    tensor_free(c_slow);
+tensor f = tensor_random(1, 4, f_s);
+tensor im = tensor_random(1, 3, im_s);
+double start = currtime();
+for(i = 0; i < n; ++i){
+tensor c = conv2d(im, f, stride, pad);
+tensor_free(c);
 }
-
-void test_col2im()
+double end = currtime();
+printf("conv2d took %f sec\n", end - start);
+tensor c = conv2d(im, f, stride, pad);
+printf("conv output %ld x %ld x %ld\n", c.size[0], c.size[1], c.size[2]);
+printf("%g gflops\n", n*gflops(f_s[0]*f_s[1]*f_s[2]*f_s[3]*im_s[1]/stride*im_s[2]/stride, (end-start)));
+tensor c_slow = conv2d_slow(im, f, stride, pad);
+TEST (same_tensor(c, c_slow));
+}
+// Conv Slow
 {
+size_t im_s[3] = {3, 512, 256};
+size_t f_s[4] = {32, 3, 3, 3};
+size_t stride = 1;
+size_t pad = 1;
+size_t n = 10;
+size_t i = 0;
+
+tensor f = tensor_random(1, 4, f_s);
+tensor im = tensor_random(1, 3, im_s);
+double start = currtime();
+for(i = 0; i < n; ++i){
+tensor c = conv2d_slow(im, f, stride, pad);
+tensor_free(c);
 }
-
-    // Conv example
-    {
-        size_t im_s[3] = {3, 512, 256};
-        size_t f_s[4] = {32, 3, 3, 3};
-        size_t stride = 1;
-        size_t pad = 1;
-        size_t n = 100;
-        size_t i = 0;
-
-        tensor f = tensor_random(1, 4, f_s);
-        tensor im = tensor_random(1, 3, im_s);
-        double start = currtime();
-        for(i = 0; i < n; ++i){
-            tensor c = conv2d(im, f, stride, pad);
-            tensor_free(c);
-        }
-        double end = currtime();
-        printf("conv2d took %f sec\n", end - start);
-        tensor c = conv2d(im, f, stride, pad);
-        printf("conv output %ld x %ld x %ld\n", c.size[0], c.size[1], c.size[2]);
-        printf("%g gflops\n", n*gflops(f_s[0]*f_s[1]*f_s[2]*f_s[3]*im_s[1]/stride*im_s[2]/stride, (end-start)));
-        tensor c_slow = conv2d_slow(im, f, stride, pad);
-        TEST (same_tensor(c, c_slow));
-    }
-    // Conv Slow
-    {
-        size_t im_s[3] = {3, 512, 256};
-        size_t f_s[4] = {32, 3, 3, 3};
-        size_t stride = 1;
-        size_t pad = 1;
-        size_t n = 10;
-        size_t i = 0;
-
-        tensor f = tensor_random(1, 4, f_s);
-        tensor im = tensor_random(1, 3, im_s);
-        double start = currtime();
-        for(i = 0; i < n; ++i){
-            tensor c = conv2d_slow(im, f, stride, pad);
-            tensor_free(c);
-        }
-        double end = currtime();
-        printf("conv2d_slow took %f sec\n", end - start);
-        tensor c = conv2d_slow(im, f, stride, pad);
-        printf("conv output %ld x %ld x %ld\n", c.size[0], c.size[1], c.size[2]);
-        printf("%g gflops\n", n*gflops(f_s[0]*f_s[1]*f_s[2]*f_s[3]*im_s[1]/stride*im_s[2]/stride, (end-start)));
-    }
-    if(0){
-        size_t i = 0;
-        for(i = 0; i < 100; ++i){
-            size_t ch = rand()%16+1;
-            size_t im_s[3] = {ch, rand()%1024+1, rand()%1024+1};
-            size_t f_s[4] = {rand()%32 + 1, ch, rand()%8+1, rand()%8+1};
-            size_t stride = rand()%6+1;
-            size_t pad = rand()%6;
-            tensor f = tensor_random(1, 4, f_s);
-            tensor im = tensor_random(1, 3, im_s);
-            tensor c = conv2d(im, f, stride, pad);
-            tensor c_slow = conv2d_slow(im, f, stride, pad);
-            TEST (same_tensor(c, c_slow));
-        }
-    }
+double end = currtime();
+printf("conv2d_slow took %f sec\n", end - start);
+tensor c = conv2d_slow(im, f, stride, pad);
+printf("conv output %ld x %ld x %ld\n", c.size[0], c.size[1], c.size[2]);
+printf("%g gflops\n", n*gflops(f_s[0]*f_s[1]*f_s[2]*f_s[3]*im_s[1]/stride*im_s[2]/stride, (end-start)));
+}
+if(0){
+size_t i = 0;
+for(i = 0; i < 100; ++i){
+size_t ch = rand()%16+1;
+size_t im_s[3] = {ch, rand()%1024+1, rand()%1024+1};
+size_t f_s[4] = {rand()%32 + 1, ch, rand()%8+1, rand()%8+1};
+size_t stride = rand()%6+1;
+size_t pad = rand()%6;
+tensor f = tensor_random(1, 4, f_s);
+tensor im = tensor_random(1, 3, im_s);
+tensor c = conv2d(im, f, stride, pad);
+tensor c_slow = conv2d_slow(im, f, stride, pad);
+TEST (same_tensor(c, c_slow));
+}
+}
 */
