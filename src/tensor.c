@@ -430,6 +430,7 @@ tensor tensor_load(char *fname)
     tensor t = tensor_make((size_t) n, size);
     tensor_read(t, fp);
     fclose(fp);
+    free(size);
     return t;
 }
 
@@ -448,6 +449,7 @@ tensor matrix_load(char *fname)
     tensor t = tensor_make((size_t) n, size);
     tensor_read(t, fp);
     fclose(fp);
+    free(size);
     return t;
 }
 
