@@ -523,7 +523,10 @@ void test_connected_layer()
     tensor out = l.forward(&l, x);
     TEST(same_tensor(truth_out, out));
 
-    tensor dx = l.backward(&l, dy);
+    tensor dx = {0};
+    if(out.n == 2){
+        dx = l.backward(&l, dy);
+    }
     TEST(same_tensor(truth_dx, dx));
     TEST(same_tensor(truth_dw, l.dw));
     TEST(same_tensor(truth_db, l.db));
