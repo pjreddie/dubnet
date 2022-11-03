@@ -11,6 +11,7 @@ extern int tests_fail;
 
 void time_matrix_multiply();
 void test_hw0();
+void test_hw1();
 void test();
 void time_tensor();
 

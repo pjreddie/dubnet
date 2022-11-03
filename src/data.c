@@ -6,6 +6,13 @@
 #include "jcr.h"
 #include "image.h"
 
+tensor image_to_tensor(image im)
+{
+    tensor t = tensor_vmake(3, im.c, im.h, im.w);
+    memcpy(t.data, im.data, tensor_len(t)*sizeof(float));
+    return t;
+}
+
 data random_batch(data d, int n)
 {
     size_t *sx = calloc(d.x.n, sizeof(size_t));
