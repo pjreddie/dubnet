@@ -2,7 +2,7 @@ OPENCV=0
 OPENMP=0
 DEBUG=0
 
-OBJ=tensor.o matrix.o connected_layer.o activation_layer.o convolutional_layer.o maxpool_layer.o net.o data.o image.o classifier.o
+OBJ=tensor.o matrix.o connected_layer.o activation_layer.o convolutional_layer.o maxpool_layer.o batchnorm2d_layer.o net.o data.o image.o classifier.o
 EXOBJ=main.o test.o
 
 VPATH=./src/:./:./lib/

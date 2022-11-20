@@ -82,7 +82,7 @@ int main(int argc, char **argv)
             } else if (0 == strcmp(argv[2], "hw1")){
                 test_hw1();
             } else if (0 == strcmp(argv[2], "hw2")){
-                //run_hw2_tests();
+                test_hw2();
             }
         } else {
             test();

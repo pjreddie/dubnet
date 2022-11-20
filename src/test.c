@@ -686,6 +686,92 @@ void test_maxpool_layer()
     free_layer(max_l3);
 }
 
+void test_batchnorm2d_layer()
+{
+    tensor x = tensor_load("data/test/bn_x.tensor");
+    tensor x2 = tensor_load("data/test/bn_x2.tensor");
+
+    tensor dy = tensor_load("data/test/bn_dy.tensor");
+    tensor dy2 = tensor_load("data/test/bn_dy2.tensor");
+
+    tensor mu   = mean2d(x);
+    tensor mu2 = mean2d(x2);
+    tensor var   =  variance2d(x, mu);
+    tensor var2 =  variance2d(x2, mu2);
+    tensor y = normalize2d(x, mu, var);
+    tensor y2 = normalize2d(x2, mu2, var2);
+
+    tensor truth_mu   = tensor_load("data/test/bn_mu.tensor");
+    tensor truth_mu2  = tensor_load("data/test/bn_mu2.tensor");
+    tensor truth_var  = tensor_load("data/test/bn_var.tensor");
+    tensor truth_var2 = tensor_load("data/test/bn_var2.tensor");
+    tensor truth_y = tensor_load("data/test/bn_y.tensor");
+    tensor truth_y2= tensor_load("data/test/bn_y2.tensor");
+    
+
+    TEST(same_tensor(truth_mu,   mu));
+    TEST(same_tensor(truth_mu2, mu2));
+    TEST(same_tensor(truth_var,   var));
+    TEST(same_tensor(truth_var2, var2));
+    TEST(same_tensor(truth_y,   y));
+    TEST(same_tensor(truth_y2, y2));
+
+
+    tensor dm = delta_mean2d(dy, var);
+    tensor dm2 = delta_mean2d(dy2, var2);
+
+    tensor truth_dm   = tensor_load("data/test/bn_dm.tensor");
+    tensor truth_dm2  = tensor_load("data/test/bn_dm2.tensor");
+    tensor truth_dv  = tensor_load("data/test/bn_dv.tensor");
+    tensor truth_dv2 = tensor_load("data/test/bn_dv2.tensor");
+    tensor truth_dx = tensor_load("data/test/bn_dx.tensor");
+    tensor truth_dx2= tensor_load("data/test/bn_dx2.tensor");
+
+    TEST(same_tensor(truth_dm,   dm));
+    TEST(same_tensor(truth_dm2, dm2));
+
+    tensor dv = delta_variance2d(dy, x, mu, var);
+    tensor dv2 = delta_variance2d(dy2, x2, mu2, var2);
+
+    TEST(same_tensor(truth_dv,   dv));
+    TEST(same_tensor(truth_dv2, dv2));
+
+    tensor dx = delta_batchnorm2d(dy, dm, dv, mu, var, x);
+    tensor dx2 = delta_batchnorm2d(dy2, dm2, dv2, mu2, var2, x2);
+
+    TEST(same_tensor(truth_dx,   dx));
+    TEST(same_tensor(truth_dx2,   dx2));
+
+    tensor_free(x);
+    tensor_free(x2);
+    tensor_free(dy);
+    tensor_free(dy2);
+    tensor_free(mu);
+    tensor_free(mu2);
+    tensor_free(var);
+    tensor_free(var2);
+    tensor_free(y);
+    tensor_free(y2);
+    tensor_free(truth_mu);
+    tensor_free(truth_mu2);
+    tensor_free(truth_var);
+    tensor_free(truth_var2);
+    tensor_free(truth_y);
+    tensor_free(truth_y2);
+    tensor_free(dm);
+    tensor_free(dm2);
+    tensor_free(dv);
+    tensor_free(dv2);
+    tensor_free(dx);
+    tensor_free(dx2);
+    tensor_free(truth_dm);
+    tensor_free(truth_dm2);
+    tensor_free(truth_dv);
+    tensor_free(truth_dv2);
+    tensor_free(truth_dx);
+    tensor_free(truth_dx2);
+}
+
 void test_hw0()
 {
     test_copy();
@@ -703,6 +789,11 @@ void test_hw1()
     test_maxpool_layer();
 }
 
+void test_hw2()
+{
+    test_batchnorm2d_layer();
+}
+
 void test()
 {
     test_tensor_make_get();
@@ -715,4 +806,3 @@ void test()
     time_tensor();
     //printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
 }
-

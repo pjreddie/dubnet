@@ -39,6 +39,7 @@ layer make_connected_layer(int inputs, int outputs);
 layer make_activation_layer(ACTIVATION activation);
 layer make_convolutional_layer(size_t c, size_t n, size_t size, size_t stride, size_t pad);
 layer make_maxpool_layer(size_t size, size_t stride);
+layer make_batchnorm2d_layer(int c);
 
 typedef struct {
     int n;
@@ -66,6 +67,14 @@ tensor image_to_tensor(image im);
 
 tensor im2col(tensor im, size_t size_y, size_t size_x, size_t stride, size_t pad);
 tensor col2im(tensor col, size_t c, size_t h, size_t w, size_t size_y, size_t size_x, size_t stride, size_t pad);
+
+
+tensor mean2d(tensor x);
+tensor variance2d(tensor x, tensor m);
+tensor normalize2d(tensor x, tensor m, tensor v);
+tensor delta_mean2d(tensor dy, tensor v);
+tensor delta_variance2d(tensor dy, tensor x, tensor m, tensor v);
+tensor delta_batchnorm2d(tensor dy, tensor dm, tensor dv, tensor m, tensor v, tensor x);
 
 void tensor_write(tensor t, FILE *fp);
 void tensor_read(tensor t, FILE *fp);

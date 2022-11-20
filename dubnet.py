@@ -164,9 +164,9 @@ make_maxpool_layer = lib.make_maxpool_layer
 make_maxpool_layer.argtypes = [c_size_t, c_size_t]
 make_maxpool_layer.restype = LAYER
 
-#make_batchnorm_layer = lib.make_batchnorm_layer
-#make_batchnorm_layer.argtypes = [c_int]
-#make_batchnorm_layer.restype = LAYER
+make_batchnorm2d_layer = lib.make_batchnorm2d_layer
+make_batchnorm2d_layer.argtypes = [c_int]
+make_batchnorm2d_layer.restype = LAYER
 
 save_weights_lib = lib.save_weights
 save_weights_lib.argtypes = [NET, c_char_p]
