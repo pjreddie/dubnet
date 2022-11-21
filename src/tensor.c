@@ -384,6 +384,7 @@ tensor tensor_sum_dim(tensor a, size_t dim)
     }
     tensor result = tensor_make(n, size);
     tensor_sum_dim_(a, dim, result);
+    free(size);
     return result;
 }
 
