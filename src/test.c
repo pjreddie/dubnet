@@ -584,6 +584,13 @@ void test_col2im()
     TEST(same_tensor(truth_col2im, col2im_res));
     TEST(same_tensor(truth_col2im2, col2im_res2));
     free_image(im);
+
+    tensor_free(dcol);
+    tensor_free(dcol2);
+    tensor_free(col2im_res);
+    tensor_free(col2im_res2);
+    tensor_free(truth_col2im);
+    tensor_free(truth_col2im2);
 }
 
 
@@ -638,6 +645,7 @@ void test_convolutional_layer()
 
     free_layer(l);
     tensor_free(truth_yt);
+    tensor_free(truth_dxt);
     tensor_free(xt);
     tensor_free(dx);
     tensor_free(y);
@@ -684,6 +692,8 @@ void test_maxpool_layer()
     tensor_free(truth_max_dx3t);
     free_layer(max_l);
     free_layer(max_l3);
+    tensor_free(max_dyt);
+    tensor_free(max_dy3t);
 }
 
 void test_batchnorm2d_layer()
